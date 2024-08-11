@@ -17,8 +17,9 @@ db.once("open", () => {
 
 const localitySchema = new mongoose.Schema({
   id: {
-    type: Number,
+    type: String,
     required: true,
+    unique: true,
   },
   ShopName: {
     type: String,

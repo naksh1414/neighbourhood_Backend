@@ -1,5 +1,7 @@
 import Locality from "../models/Locality.js"; // Import the Locality model
-
+import upload from "../config/MulterConfig.js";
+import { v4 as uuidv4 } from 'uuid'; 
+// import { cloudinary } from "../config/ClodinaryConfig.js";
 // Get all localities
 export const getAllLocalities = async (req, res) => {
   try {
@@ -25,15 +27,40 @@ export const getLocalityById = async (req, res) => {
 };
 
 export const saveLocality = async (req, res) => {
-  const localityData = req.body;
+  upload.array("images", 5)(req, res, async function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Failed to upload images" });
+    }
 
-  try {
-    const newLocality = new Locality(localityData);
-    await newLocality.save();
-    res
-      .status(201)
-      .json({ message: "Locality saved successfully!", newLocality });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to save locality" });
-  }
+    try {
+      const localityData = req.body;
+
+      // Generate a unique ID using UUID
+      localityData.id = uuidv4();
+
+      // Parse services_offered if it is a string
+      if (typeof localityData.services_offered === "string") {
+        localityData.services_offered = JSON.parse(
+          localityData.services_offered
+        );
+      }
+
+      // Check if there are images to upload
+      if (req.files && req.files.length > 0) {
+        localityData.images = req.files.map((file) => ({
+          imageLink: file.path, // Adjust this if you use Cloudinary
+        }));
+      }
+
+      const newLocality = new Locality(localityData);
+      await newLocality.save();
+      res.status(201).json({
+        message: "Locality saved successfully!",
+        newLocality,
+      });
+    } catch (error) {
+      console.error("Save Locality error:", error);
+      res.status(500).json({ error: "Failed to save locality" });
+    }
+  });
 };
