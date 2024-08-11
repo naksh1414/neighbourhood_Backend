@@ -56,6 +56,9 @@ const localitySchema = new mongoose.Schema({
   Address: {
     type: String,
   },
+  g_map: {
+    type: String,
+  },
   images: [
     {
       imageLink: {
