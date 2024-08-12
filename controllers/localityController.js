@@ -1,12 +1,15 @@
 import Locality from "../models/Locality.js"; // Import the Locality model
 import upload from "../config/MulterConfig.js";
-import { v4 as uuidv4 } from 'uuid'; 
+import { v4 as uuidv4 } from "uuid";
 // import { cloudinary } from "../config/ClodinaryConfig.js";
 // Get all localities
 export const getAllLocalities = async (req, res) => {
   try {
-    const localities = await Locality.find({});
-    res.status(200).json(localities);
+    const { page = 1, limit = 10 } = req.query; // Default to page 1, limit 10
+    const skip = (page - 1) * limit;
+    const totalLocalities = await Locality.countDocuments({});
+    const localities = await Locality.find({}).skip(skip).limit(Number(limit));
+    res.status(200).json({ localities, total: totalLocalities });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch localities" });
   }
