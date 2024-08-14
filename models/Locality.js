@@ -43,13 +43,13 @@ const localitySchema = new mongoose.Schema({
     type: String,
   },
   Distance_from_college: {
-    type: String,
+    type: Number,
   },
   Description: {
     type: String,
   },
   Ratings: {
-    type: String,
+    type: Number,
   },
   Reviews: {
     type: String,
