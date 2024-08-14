@@ -5,11 +5,13 @@ import { v4 as uuidv4 } from "uuid";
 // Get all localities
 export const getAllLocalities = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query; // Default to page 1, limit 10
+    const { page = 1, limit = 9 } = req.query; // Default to page 1, limit 5
     const skip = (page - 1) * limit;
     const totalLocalities = await Locality.countDocuments({});
     const localities = await Locality.find({}).skip(skip).limit(Number(limit));
-    res.status(200).json({ localities, total: totalLocalities });
+    const totalPages = Math.ceil(totalLocalities / limit);
+
+    res.status(200).json({ localities, total: totalLocalities, totalPages });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch localities" });
   }
