@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get("/localities", getAllLocalities);
 router.get("/localities/:id", getLocalityById);
-router.get("/localities/:id", updateLocalityByShopName);
+router.patch("/updatelocalities/:id", updateLocalityByShopName);
 router.get("/findlocalities/:shopName", searchLocalityByShopName);
 router.post("/localities", saveLocality);
 

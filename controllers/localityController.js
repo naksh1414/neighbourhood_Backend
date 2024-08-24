@@ -2,6 +2,7 @@ import Locality from "../models/Locality.js"; // Import the Locality model
 import upload from "../config/MulterConfig.js";
 import { v4 as uuidv4 } from "uuid";
 export const getAllLocalities = async (req, res) => {
+  console.log("listning");
   try {
     const { page = 1, limit = 9 } = req.query;
     const skip = (page - 1) * limit;
@@ -58,7 +59,10 @@ export const saveLocality = async (req, res) => {
   });
 };
 export const updateLocalityByShopName = async (req, res) => {
-  const { shopName } = req.params;
+  console.log("hit recived 1")
+  console.log(req.body)
+  const shopName  = req.params.id;
+  console.log(shopName);
 
   upload.array("images", 5)(req, res, async function (err) {
     if (err) {
@@ -111,7 +115,6 @@ export const updateLocalityByShopName = async (req, res) => {
 
 export const searchLocalityByShopName = async (req, res) => {
   const { shopName } = req.params;
-  console.log(req.params)
   try {
     if (!shopName) {
       return res.status(400).json({ error: "Shop name is required" });
@@ -126,7 +129,6 @@ export const searchLocalityByShopName = async (req, res) => {
     }
 
     res.status(200).json(locality);
-    console.log("Found locality:", locality);
   } catch (error) {
     console.error("Search Locality by ShopName error:", error);
     res.status(500).json({ error: "Failed to search locality by shop name" });
